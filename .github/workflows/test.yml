@@ -35,14 +35,21 @@ jobs:
 
       - name: Package artifact
         run: |
-          ARTIFACT="app-test-${{ github.sha }}.tar.gz"
-          tar -czf "$ARTIFACT" \
+          mkdir -p artifacts
+          ARTIFACT_FILE="app-test-${{ github.sha }}.tar.gz"
+          ARTIFACT_PATH="artifacts/$ARTIFACT_FILE"
+
+          tar -czf "$ARTIFACT_PATH" \
             --exclude='.git' \
             --exclude='artifacts' \
             --exclude='*.pyc' \
             --exclude='__pycache__' \
+            --exclude='venv' \
+            --exclude='.venv' \
             .
-          echo "ARTIFACT=$ARTIFACT" >> $GITHUB_ENV
+
+          echo "ARTIFACT_FILE=$ARTIFACT_FILE" >> $GITHUB_ENV
+          echo "ARTIFACT_PATH=$ARTIFACT_PATH" >> $GITHUB_ENV
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
@@ -53,7 +60,7 @@ jobs:
       - name: Build Docker image from artifact
         run: |
           docker build \
-            --build-arg ARTIFACT_NAME="$ARTIFACT" \
+            --build-arg ARTIFACT_NAME="$ARTIFACT_PATH" \
             -t ${{ vars.REGISTRY_NAME }}/${{ vars.IMAGE_NAME }}:test-${{ github.sha }} \
             -t ${{ vars.REGISTRY_NAME }}/${{ vars.IMAGE_NAME }}:test-latest \
             .
