@@ -1,5 +1,6 @@
 name: dev — artifact-first
-
+permissions:
+  contents: write  # Needed to commit the artifact to the repo
 on:
   push:
     branches: [dev]
