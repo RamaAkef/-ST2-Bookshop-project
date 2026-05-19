@@ -31,7 +31,7 @@ nginx — Reverse proxy on port 80, also serves static files
  Useful Commands
 
 Command What it does 
-
+Test
 docker compose up --build  Build and start everything 
 docker compose down  Stop all containers 
 docker compose down -v Stop and delete database (fresh start) 
